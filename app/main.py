@@ -1,6 +1,6 @@
 import logging
 import os
-from typing import List, Optional
+from typing import List, Optional, Dict, Any
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
@@ -67,6 +67,20 @@ class Query(BaseModel):
     n_results: int = 3
     type: Optional[str] = None
 
+# Hàm tiện ích để xử lý metadata
+def clean_metadata(metadata: Dict[str, Any]) -> Dict[str, Any]:
+    """Loại bỏ hoặc thay thế giá trị None trong metadata."""
+    cleaned = {}
+    for key, value in metadata.items():
+        if value is None:
+            cleaned[key] = ""  # Thay None bằng chuỗi rỗng
+        elif isinstance(value, (str, int, float, bool)):
+            cleaned[key] = value
+        else:
+            logger.warning(f"Invalid metadata value for key {key}: {value} (type {type(value)}). Converting to string.")
+            cleaned[key] = str(value)
+    return cleaned
+
 # Endpoint lập chỉ mục tài liệu
 @app.post("/index")
 async def index_document(document: Document):
@@ -80,12 +94,16 @@ async def index_document(document: Document):
         )["embedding"]
         logger.info(f"Embedding generated: {len(embedding)} dimensions")
 
+        # Xử lý metadata
+        cleaned_metadata = clean_metadata(document.metadata)
+        logger.info(f"Cleaned metadata: {cleaned_metadata}")
+
         # Thêm vào ChromaDB
         collection.add(
             documents=[document.content],
             embeddings=[embedding],
             ids=[document.id],
-            metadatas=[document.metadata]
+            metadatas=[cleaned_metadata]
         )
         count = collection.count()
         logger.info(f"Total documents in collection: {count}")
@@ -163,15 +181,21 @@ async def bulk_index(documents: List[Document]):
         metadatas = []
 
         for doc in documents:
+            logger.info(f"Processing document ID: {doc.id}, metadata: {doc.metadata}")
+            # Tạo embedding
             embedding = genai.embed_content(
                 model=embedding_model,
                 content=doc.content,
                 task_type="retrieval_document",
             )["embedding"]
+            # Xử lý metadata
+            cleaned_metadata = clean_metadata(doc.metadata)
+            logger.info(f"Cleaned metadata: {cleaned_metadata}")
+
             contents.append(doc.content)
             embeddings.append(embedding)
             ids.append(doc.id)
-            metadatas.append(doc.metadata)
+            metadatas.append(cleaned_metadata)
 
         collection.add(
             documents=contents,
