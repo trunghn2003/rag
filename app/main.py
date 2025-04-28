@@ -18,6 +18,8 @@ app.add_middleware(
         "http://localhost:8000",
         "http://localhost",
         "http://localhost:80",
+        "http://api.football1.io.vn",
+        "http://157.66.47.51:9000"
     ],
     allow_credentials=True,
     allow_methods=["*"],

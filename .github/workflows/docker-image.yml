@@ -41,6 +41,9 @@ jobs:
         password: ${{ secrets.SERVER_PASSWORD }}
         script: |
 
+
           echo ${{ secrets.DOCKER_PASSWORD }} | docker login ${{'docker.io' }} -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
+          docker stop rag || true
+          docker rm rag || true
           docker pull ${{ secrets.DOCKER_USERNAME }}/rag:latest
           docker run --name rag -d -p 8000:8000 ${{ secrets.DOCKER_USERNAME }}/rag:${{ github.sha }}
