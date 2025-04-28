@@ -46,4 +46,4 @@ jobs:
           sudo docker stop rag || true
           sudo docker rm rag || true
           sudo docker pull ${{ secrets.DOCKER_USERNAME }}/rag:latest
-          sudo docker run --name rag -d -p 8000:8000 ${{ secrets.DOCKER_USERNAME }}/rag:${{ github.sha }}
+          sudo docker run --name rag -d -p 8000:8000 -v $(pwd)/chroma_db:/app/chroma_db ${{ secrets.DOCKER_USERNAME }}/rag:${{ github.sha }}
