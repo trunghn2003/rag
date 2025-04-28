@@ -39,7 +39,7 @@ collection = chroma_client.get_or_create_collection(
 key = "AIzaSyCyaBub5taZ9m7ybGCLrH0jv-X-0x4Lv-U"
 genai.configure(api_key=key)
 model = genai.GenerativeModel('gemini-2.0-flash')
-embedding_model = "models/embedding-001"
+embedding_model = "models/embedding-004"
 
 class Document(BaseModel):
     id: str
