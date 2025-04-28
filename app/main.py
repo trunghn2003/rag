@@ -53,8 +53,8 @@ key = "AIzaSyCyaBub5taZ9m7ybGCLrH0jv-X-0x4Lv-U"
 if not key:
     raise ValueError("GOOGLE_API_KEY not found in environment variables")
 genai.configure(api_key=key)
-model = genai.GenerativeModel('gemini-1.5-flash')  # Sử dụng mô hình hợp lệ
-embedding_model = "models/embedding-004"  # 768 chiều
+model = genai.GenerativeModel('gemini-1.5-flash')  # Mô hình hợp lệ
+embedding_model = "text-embedding-004"  # Sửa từ models/embedding-004 thành text-embedding-004
 
 # Định nghĩa mô hình dữ liệu
 class Document(BaseModel):
@@ -111,7 +111,7 @@ async def query_documents(query: Query):
         where_filter = {"type": query.type} if query.type else None
         logger.info(f"Applying filter: {where_filter}")
         results = collection.query(
-            query_embeddings=[query_embedding],  # Sử dụng query_embeddings
+            query_embeddings=[query_embedding],
             n_results=query.n_results,
             where=where_filter
         )
