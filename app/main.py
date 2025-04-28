@@ -54,7 +54,7 @@ if not key:
     raise ValueError("GOOGLE_API_KEY not found in environment variables")
 genai.configure(api_key=key)
 model = genai.GenerativeModel('gemini-1.5-flash')  # Mô hình hợp lệ
-embedding_model = "text-embedding-004"  # Sửa từ models/embedding-004 thành text-embedding-004
+embedding_model = "model/text-embedding-004"  # Sửa từ models/embedding-004 thành text-embedding-004
 
 # Định nghĩa mô hình dữ liệu
 class Document(BaseModel):
