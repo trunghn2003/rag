@@ -48,7 +48,8 @@ collection = chroma_client.get_or_create_collection(
 logger.info("Initialized ChromaDB collection 'football_knowledge'")
 
 # Khởi tạo Gemini
-key = os.getenv("GOOGLE_API_KEY")
+key = "AIzaSyCyaBub5taZ9m7ybGCLrH0jv-X-0x4Lv-U"
+
 if not key:
     raise ValueError("GOOGLE_API_KEY not found in environment variables")
 genai.configure(api_key=key)
